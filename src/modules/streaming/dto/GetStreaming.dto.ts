@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class GetStreamingDto {
 
-    @ApiProperty({ description:'Id of streaming', example: '123', required: true, type:String })
+    @ApiProperty({ description:'Id of streaming', example: 123, required: true, type:String })
     id: number;
 
     @ApiProperty({ description:'Title of streaming', example: 'Breaking Bad', required: true, type:String })
