@@ -103,7 +103,7 @@ describe('Streaming Controller', () => {
 
             jest.spyOn(getStreamingService, 'get');
             const mockStreamingId:string = '2';
-            const response = await controller.getOne(mockStreamingId);
+            const response = await controller.get(mockStreamingId);
             expect(getStreamingService.get).toBeCalledWith(+mockStreamingId);
             expect(response).toBe(getStreamingWithDetailsResponse1);
         });

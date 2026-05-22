@@ -112,7 +112,7 @@ export class StreamingController {
         summary:'List or Find Streamings'
     })
     @AddTotalCountHeader('streamings')
-    async findAll(
+    async find(
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page:number,
         @Query('limit', new DefaultValuePipe(DEFAULT_LIMIT), ParseIntPipe) limit:number,
         @Query(ParseFiltersPipe) filters?:any,
@@ -153,8 +153,8 @@ export class StreamingController {
     @HttpCode(HttpStatus.OK)
     @Header(HTTP_HEADERS.CONTENT_TYPE, APPLICATION_JSON_CONTENT_TYPE)
     @Get(':id')
-    async findOne(@Param('id') id: string): Promise<GetStreamingDetailsDto> {
-        return this.getStreamingService.find(+id);
+    async get(@Param('id') id: string): Promise<GetStreamingDetailsDto> {
+        return this.getStreamingService.get(+id);
     }
 
     @ApiOkResponse({
