@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { StreamingModule } from './streaming/streaming.module';
 import {PostgreConnectionModule} from "./PostgreConnectionModule";
+import {HealthModule} from "./health/health.module";
 
 @Module({
     imports: [
@@ -11,6 +11,7 @@ import {PostgreConnectionModule} from "./PostgreConnectionModule";
         }),
         PostgreConnectionModule,
         StreamingModule,
+        HealthModule
     ],
 })
 export class ApplicationModule {}
