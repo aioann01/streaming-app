@@ -13,7 +13,8 @@ import {Streaming} from "./entity/Streaming.entity";
 
 @Module({
     controllers: [StreamingController],
-    providers: [CreateStreamingService,
+    providers: [
+        CreateStreamingService,
         UpdateStreamingService,
         FindStreamingService,
         GetStreamingService,

@@ -43,7 +43,7 @@ export class StreamingController {
  
     @Get()
     @AddTotalCountHeader('streamings')
-    async findAll(
+    async find(
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page:number,
         @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit:number,
         @Query(ParseFiltersPipe) filters?:any,
@@ -59,8 +59,8 @@ export class StreamingController {
 
    
     @Get(':id')
-    async findOne(@Param('id') id: string): Promise<GetStreamingDetailsDto> {
-        return this.getStreamingService.find(+id);
+    async getOne(@Param('id') id: string): Promise<GetStreamingDetailsDto> {
+        return this.getStreamingService.get(+id);
     }
 
   
@@ -73,7 +73,7 @@ export class StreamingController {
     }
 
 
-   
+    @HttpCode(HttpStatus.NO_CONTENT)
     @Delete(':id')
     async delete(@Param('id') id: string): Promise<void> {
         return this.deleteStreamingService.delete(+id);

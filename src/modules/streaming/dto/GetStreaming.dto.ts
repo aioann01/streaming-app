@@ -16,4 +16,5 @@ export class GetStreamingDto {
 
     @ApiProperty({ description: 'Creation date of streaming', example:'12/2/2023', required: true, type:Date })
     created_at: Date;
+
 }

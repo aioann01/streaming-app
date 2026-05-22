@@ -10,7 +10,7 @@ export class GetStreamingService {
     ) {
     }
 
-    async find(id:number): Promise<GetStreamingDetailsDto> {
+    async get(id:number): Promise<GetStreamingDetailsDto> {
         return this.streamingDaoImpl.findOne(id);
     }
 }
