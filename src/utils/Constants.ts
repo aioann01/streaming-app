@@ -1,6 +1,7 @@
 export enum HTTP_HEADERS {
     LOCATION = 'location',
-    CONTENT_TYPE = 'content-type'
+    CONTENT_TYPE = 'content-type',
+    AUTHORIZATION = 'authorization'
 }
 
 export const FIND_OPTIONS_NOT_FILTER_QUERY_PARAMS:string[] = ['limit', 'page', 'sort']

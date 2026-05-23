@@ -6,6 +6,803 @@
 	},
 	"item": [
 		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register Admin - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var createdEntity = pm.response.json();\r",
+									"var request =  JSON.parse(pm.request.body.raw);\r",
+									"var entityId = createdEntity.id;\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has auto-generated fields\", function () {\r",
+									"    pm.expect(createdEntity.created_at).to.exist;\r",
+									"    pm.expect(new Date(createdEntity.created_at)).to.be.a('date');\r",
+									"    pm.expect(createdEntity.id).to.exist.and.to.be.a('number');\r",
+									"    pm.expect(createdEntity.email).to.exist.and.to.eq(pm.environment.get('adminEmail'));\r",
+									"    pm.expect(createdEntity.role).to.exist.and.to.eq('ADMIN');\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const random = Math.random().toString(36).substring(2, 10);\r",
+									"const email = `user_${random}@testmail.com`;\r",
+									"\r",
+									"pm.environment.set(\"adminEmail\", email);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{adminEmail}}\",\r\n    \"password\": \"{{adminPassword}}\",\r\n    \"role\": \"ADMIN\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var createdEntity = pm.response.json();\r",
+									"var request =  JSON.parse(pm.request.body.raw);\r",
+									"var entityId = createdEntity.id;\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has auto-generated fields\", function () {\r",
+									"    pm.expect(createdEntity.created_at).to.exist;\r",
+									"    pm.expect(new Date(createdEntity.created_at)).to.be.a('date');\r",
+									"    pm.expect(createdEntity.id).to.exist.and.to.be.a('number');\r",
+									"    pm.expect(createdEntity.email).to.exist.and.to.eq(pm.environment.get('agentEmail'));\r",
+									"    pm.expect(createdEntity.role).to.exist.and.to.eq('AGENT');\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const random = Math.random().toString(36).substring(2, 10);\r",
+									"const email = `user_${random}@testmail.com`;\r",
+									"\r",
+									"pm.environment.set(\"agentEmail\", email);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"password\": \"{{agentPassword}}\",\r\n    \"role\": \"AGENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent  with email that exists - 409",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 409\", function () {\r",
+									"    pm.response.to.have.status(409);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"User already exists\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"password\": \"{{agentPassword}}\",\r\n    \"role\": \"AGENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent without role - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"role must be one of the following values: ADMIN, AGENT, role should not be empty\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"password\": \"{{agentPassword}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent with invalid role - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"role must be one of the following values: ADMIN, AGENT\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"password\": \"{{agentPassword}}\",\r\n    \"role\":\"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent without password - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"password must be longer than or equal to 6 characters, password should not be empty, password must match /^(?=.*[A-Za-z])(?=.*\\\\d).+$/ regular expression, password must be a string\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"role\": \"AGENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent without empty password - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"password must be longer than or equal to 6 characters, password should not be empty, password must match /^(?=.*[A-Za-z])(?=.*\\\\d).+$/ regular expression\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"password\":\"\",\r\n    \"role\": \"AGENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent with invalid password - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"password must be longer than or equal to 6 characters, password must match /^(?=.*[A-Za-z])(?=.*\\\\d).+$/ regular expression\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"password\":\"123\",\r\n    \"role\": \"AGENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent with password  without numbers - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"password must match /^(?=.*[A-Za-z])(?=.*\\\\d).+$/ regular expression\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"password\":\"Testing!\",\r\n    \"role\": \"AGENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent with password  without letters  - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"password must match /^(?=.*[A-Za-z])(?=.*\\\\d).+$/ regular expression\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"password\":\"231123!\",\r\n    \"role\": \"AGENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent without email - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"email must be longer than or equal to 5 characters, email must be an email, email should not be empty, email must be a string\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\":\"Testing123!\",\r\n    \"role\": \"AGENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent with not valid email - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"email must be an email\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\":\"Testing123!\",\r\n    \"email\":\"testas\",\r\n    \"role\": \"AGENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Admin - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"pm.collectionVariables.set('adminToken', response.access_token)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{adminEmail}}\",\r\n    \"password\": \"{{adminPassword}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/login",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Agent - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"pm.collectionVariables.set('agentToken', response.access_token)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"password\": \"{{agentPassword}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/login",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Agent with wrong password - 401",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"Invalid credentials\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"password\": \"{{adminPassword}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/login",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Agent with email that does not exists - 401",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"Invalid credentials\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"123{{agentEmail}}\",\r\n    \"password\": \"{{agentPassword}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/login",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "health",
 			"item": [
 				{
@@ -26,24 +823,13 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{superUserToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "GET",
 						"header": [
 							{
 								"key": "Accept-Language",
 								"value": "en-US,en;q=0.9"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer qwe"
 							},
 							{
 								"key": "Cache-Control",
@@ -56,10 +842,6 @@
 							{
 								"key": "Pragma",
 								"value": "no-cache"
-							},
-							{
-								"key": "Referer",
-								"value": "https://devportal.{{domainNameCloud}}"
 							},
 							{
 								"key": "Sec-Fetch-Dest",
@@ -134,14 +916,18 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"title\":\"Breaking Bad\",\r\n    \"thumbnail_url\":\"https://example.com:3000/thumbnails/breaking_bad\",\r\n    \"description\":\"Chemisty teacher goes meth drug lord\",\r\n    \"genre\":\"Drama\"\r\n}",
@@ -187,14 +973,18 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"title\":\"Breaking Bad\",\r\n    \"thumbnail_url\":\"https://example.com:3000/thumbnails/breaking_bad\",\r\n    \"description\":\"Chemisty teacher goes meth drug lord\",\r\n    \"genre\":\"Drama\",\r\n    \"video_url\":\"not valid\"\r\n}",
@@ -240,14 +1030,18 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"title\":\"Breaking Bad\",\r\n    \"thumbnail_url\":\"https://example.com:3000/thumbnails/breaking-bad\",\r\n    \"description\":\"Chemisty teacher goes meth drug lord\",\r\n    \"genre\":\"Drama\",\r\n    \"video_url\":\"http://example:3000/resources/breaking-bad\"\r\n}",
@@ -293,14 +1087,18 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"title\":\"Breaking Bad\",\r\n    \"video_url\":\"https://example.com:3000/resources/breaking-bad\",\r\n    \"description\":\"Chemisty teacher goes meth drug lord\",\r\n    \"genre\":\"Drama\"\r\n}",
@@ -346,14 +1144,18 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"title\":\"Breaking Bad\",\r\n    \"thumbnail_url\":\"http://example.com:3000/thumbnails/breaking-bad\",\r\n    \"description\":\"Chemisty teacher goes meth drug lord\",\r\n    \"genre\":\"Drama\",\r\n    \"video_url\":\"https://example.com:3000/resources/breaking-bad\"\r\n}",
@@ -399,14 +1201,18 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"title\":\"Breaking Bad\",\r\n    \"thumbnail_url\":\"example\",\r\n    \"description\":\"Chemisty teacher goes meth drug lord\",\r\n    \"genre\":\"Drama\",\r\n    \"video_url\":\"https://example.com:3000/resources/breaking-bad\"\r\n}",
@@ -452,17 +1258,128 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"video_url\":\"https://example.com:3000/resources/breaking-bad\",\r\n    \"description\":\"Chemisty teacher goes meth drug lord\",\r\n    \"thumbnail_url\":\"https://example.com:3000/thumbnail/breaking-bad\",\r\n    \"genre\":\"Drama\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Streaming with agent user - 403",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"Insufficient permissions to perform this operation\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{agentToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"Breaking Bad\",\r\n    \"video_url\":\"https://example.com:3000/resources/breaking-bad\",\r\n    \"thumbnail_url\":\"https://example.com:3000/thumbnails/breaking-bad\",\r\n    \"description\":\"Chemisty teacher goes meth drug lord\",\r\n    \"genre\":\"Drama\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Streaming without authorization - 401",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"Missing Authorization header\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"Breaking Bad\",\r\n    \"video_url\":\"https://example.com:3000/resources/breaking-bad\",\r\n    \"thumbnail_url\":\"https://example.com:3000/thumbnails/breaking-bad\",\r\n    \"description\":\"Chemisty teacher goes meth drug lord\",\r\n    \"genre\":\"Drama\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -536,15 +1453,18 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{superUserToken}}",
-								"type": "default",
-								"disabled": true
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"title\":\"Breaking Bad\",\r\n    \"video_url\":\"https://example.com:3000/resources/breaking-bad\",\r\n    \"thumbnail_url\":\"https://example.com:3000/thumbnails/breaking-bad\",\r\n    \"description\":\"Chemisty teacher goes meth drug lord\",\r\n    \"genre\":\"Drama\"\r\n}",
@@ -620,15 +1540,18 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{superUserToken}}",
-								"type": "default",
-								"disabled": true
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"title\":\"How I met your Mother\",\r\n    \"video_url\":\"https://example.com:3000/resources/how-i-met-your-mother\",\r\n    \"thumbnail_url\":\"https://example.com:3000/thumbnails/how-i-met-your-mother\",\r\n    \"description\":\"Guy tels story to his kids of how he met their mother\",\r\n    \"genre\":\"Comedy\"\r\n}",
@@ -704,15 +1627,18 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{superUserToken}}",
-								"type": "default",
-								"disabled": true
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"title\":\"The office\",\r\n    \"video_url\":\"https://example.com:3000/resources/the-office\",\r\n    \"thumbnail_url\":\"https://example.com:3000/thumbnails/the-office\",\r\n    \"description\":\"Daily stories of people from an office\",\r\n    \"genre\":\"Comedy\"\r\n}",
@@ -788,15 +1714,18 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{superUserToken}}",
-								"type": "default",
-								"disabled": true
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"title\":\"Friends\",\r\n    \"video_url\":\"https://example.com:3000/resources/friends\",\r\n    \"thumbnail_url\":\"https://example.com:3000/thumbnails/friends\",\r\n    \"description\":\"Daily stories of friends\",\r\n    \"genre\":\"Comedy\"\r\n}",
@@ -820,7 +1749,7 @@
 					"response": []
 				},
 				{
-					"name": "Get Streaming - 200",
+					"name": "Get Streaming with admin token - 200",
 					"event": [
 						{
 							"listen": "test",
@@ -852,19 +1781,109 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{superUserToken}}",
+									"value": "{{adminToken}}",
 									"type": "string"
 								}
 							]
 						},
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming/{{streamingId1}}",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming",
+								"{{streamingId1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Streaming with agent token - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var retrievedEntity = pm.response.json();\r",
+									"\r",
+									"var entityId = retrievedEntity.id;\r",
+									"\r",
+									"var requiredAttributes = ['id', 'created_at', 'updated_at', 'title', 'video_url', 'thumbnail_url', 'description', 'genre'];\r",
+									"\r",
+									"pm.test('Retrieved Entity has all mandatory attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.include.members(requiredAttributes)\r",
+									"      });\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
 							}
-						],
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{agentToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming/{{streamingId1}}",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming",
+								"{{streamingId1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Streaming without authorization- 401",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"Missing Authorization header\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
 						"url": {
 							"raw": "{{APIDomainName}}/api/streaming/{{streamingId1}}",
 							"host": [
@@ -908,19 +1927,13 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{superUserToken}}",
+									"value": "{{adminToken}}",
 									"type": "string"
 								}
 							]
 						},
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{APIDomainName}}/api/streaming/500",
 							"host": [
@@ -971,14 +1984,127 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\":\"Chemisty teacher breaks bad\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
 							}
-						],
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming/{{streamingId1}}",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming",
+								"{{streamingId1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update streaming  with agent token - 403",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"Insufficient permissions to perform this operation\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{agentToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\":\"Chemisty teacher breaks bad\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming/{{streamingId1}}",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming",
+								"{{streamingId1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update streaming  without authorization - 401",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"Missing Authorization header\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"description\":\"Chemisty teacher breaks bad\"\r\n}",
@@ -1026,14 +2152,18 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"description\": \"Dummy\"\r\n}",
@@ -1058,7 +2188,7 @@
 					"response": []
 				},
 				{
-					"name": "Get all streamings - 200",
+					"name": "Get all streamings with agent token - 200",
 					"event": [
 						{
 							"listen": "test",
@@ -1106,19 +2236,123 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{superUserToken}}",
+									"value": "{{agentToken}}",
 									"type": "string"
 								}
 							]
 						},
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all streamings with admin  token - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var retrievedEntities = pm.response.json();\r",
+									"retrievedEntities.forEach(function (retrievedEntity) {\r",
+									"\r",
+									"\r",
+									"var requiredAttributes = ['id', 'title', 'thumbnail_url', 'created_at'];\r",
+									"var detailedAttributes = ['description', 'video_url', 'updated_at'];\r",
+									"\r",
+									"\r",
+									"pm.test('Retrieved Entity has all mandatory attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.include.members(requiredAttributes)\r",
+									"      });\r",
+									"\r",
+									"pm.test('Retrieved Entity does not has detailed attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.not.include.members(detailedAttributes)\r",
+									"      });\r",
+									"});\r",
+									"\r",
+									"const default_limit = 10;\r",
+									"pm.test(\"Check x_total_count and x_result_count response headers\", function () {\r",
+									"    pm.response.to.have.header(\"X-Result-Count\");\r",
+									"    var resultCount = Number(pm.response.headers.get(\"X-Result-Count\"));\r",
+									"    pm.expect(resultCount).to.eq(retrievedEntities.length);\r",
+									"    pm.response.to.have.header(\"X-Total-Count\");\r",
+									"    var totalCount = Number(pm.response.headers.get(\"X-Total-Count\"));\r",
+									"    pm.expect(totalCount).to.gte(retrievedEntities.length);\r",
+									"    pm.expect(resultCount).to.lte(default_limit);\r",
+									"    });"
+								],
+								"type": "text/javascript"
 							}
-						],
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all streamings without authorization - 401",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"Missing Authorization header\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
 						"url": {
 							"raw": "{{APIDomainName}}/api/streaming",
 							"host": [
@@ -1193,19 +2427,13 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{superUserToken}}",
+									"value": "{{agentToken}}",
 									"type": "string"
 								}
 							]
 						},
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{APIDomainName}}/api/streaming?sort=created_at.asc",
 							"host": [
@@ -1278,19 +2506,13 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{superUserToken}}",
+									"value": "{{agentToken}}",
 									"type": "string"
 								}
 							]
 						},
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{APIDomainName}}/api/streaming?genre=Comedy",
 							"host": [
@@ -1364,19 +2586,13 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{superUserToken}}",
+									"value": "{{agentToken}}",
 									"type": "string"
 								}
 							]
 						},
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{APIDomainName}}/api/streaming?genre=Comedy&title=Friends",
 							"host": [
@@ -1469,19 +2685,13 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{superUserToken}}",
+									"value": "{{agentToken}}",
 									"type": "string"
 								}
 							]
 						},
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{APIDomainName}}/api/streaming?genre=Comedy&limit={{limit}}",
 							"host": [
@@ -1580,19 +2790,13 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{superUserToken}}",
+									"value": "{{agentToken}}",
 									"type": "string"
 								}
 							]
 						},
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{APIDomainName}}/api/streaming?genre=Comedy&limit={{limit}}&page=1",
 							"host": [
@@ -1700,19 +2904,13 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{superUserToken}}",
+									"value": "{{agentToken}}",
 									"type": "string"
 								}
 							]
 						},
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{APIDomainName}}/api/streaming?genre=Comedy&limit={{limit}}&page=2",
 							"host": [
@@ -1823,19 +3021,13 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{superUserToken}}",
+									"value": "{{agentToken}}",
 									"type": "string"
 								}
 							]
 						},
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{APIDomainName}}/api/streaming?genre=Comedy&limit={{limit}}&sort=created_at.asc",
 							"host": [
@@ -1879,14 +3071,18 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{APIDomainName}}/api/streaming/{{streamingId1}}",
 							"host": [
@@ -1902,7 +3098,98 @@
 					"response": []
 				},
 				{
-					"name": "Delete Dunning Case That Not Exists - 404",
+					"name": "Delete Streaming with agent token - 403",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"Insufficient permissions to perform this operation\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{agentToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming/{{streamingId1}}",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming",
+								"{{streamingId1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Streaming without authorization - 401",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"Missing Authorization header\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming/{{streamingId1}}",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming",
+								"{{streamingId1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Streaming That Not Exists - 404",
 					"event": [
 						{
 							"listen": "test",
@@ -1925,14 +3212,18 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{APIDomainName}}/api/streaming/123",
 							"host": [
@@ -1988,14 +3279,18 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{APIDomainName}}/api/streaming/{{streamingId2}}",
 							"host": [
@@ -2026,14 +3321,18 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{APIDomainName}}/api/streaming/{{streamingId3}}",
 							"host": [
@@ -2064,14 +3363,18 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{CognitoUserToken}}",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{APIDomainName}}/api/streaming/{{streamingId4}}",
 							"host": [
@@ -2137,6 +3440,40 @@
 					""
 				]
 			}
+		}
+	],
+	"variable": [
+		{
+			"key": "streamingId1",
+			"value": ""
+		},
+		{
+			"key": "adminToken",
+			"value": ""
+		},
+		{
+			"key": "agentToken",
+			"value": ""
+		},
+		{
+			"key": "streamingId2",
+			"value": ""
+		},
+		{
+			"key": "streamingId3",
+			"value": ""
+		},
+		{
+			"key": "streamingId4",
+			"value": ""
+		},
+		{
+			"key": "limit",
+			"value": ""
+		},
+		{
+			"key": "page1Ids",
+			"value": ""
 		}
 	]
 }

@@ -30,6 +30,14 @@ export const appConfiguration = (app: INestApplication) => {
         .setTitle(info.AppName)
         .setDescription(info.AppDescription)
         .setVersion(info.AppVersion)
+        .addBearerAuth(
+            {
+                type: 'http',
+                scheme: 'bearer',
+                bearerFormat: 'JWT',
+            },
+            'jwt',
+        )
         .addServer(
             `${process.env.API_URL}/`,
         )

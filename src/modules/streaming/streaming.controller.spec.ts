@@ -17,6 +17,8 @@ import {
 } from "../../../test/mock/api/requests";
 import {FindOptions} from "../../api/model/FindOptions";
 import {SortOptions, SortOrder} from "../../api/model/SortOptions";
+import {ConfigModule, ConfigService} from "@nestjs/config";
+import {JwtModule} from "@nestjs/jwt";
 
 
 describe('Streaming Controller', () => {
@@ -63,6 +65,12 @@ describe('Streaming Controller', () => {
                         get: jest.fn().mockImplementation(() => getStreamingWithDetailsResponse1),
                     })
                 },
+            ],
+            imports: [
+                JwtModule.register({
+                    secret: 'test-secret',
+                    signOptions: { expiresIn: '1d' },
+                })
             ],
             controllers: [StreamingController],
         })

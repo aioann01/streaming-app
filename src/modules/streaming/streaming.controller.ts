@@ -1,16 +1,21 @@
 import {
-    Controller,
-    Get,
-    Post,
     Body,
-    Param,
+    Controller,
+    DefaultValuePipe,
     Delete,
+    Get,
+    Header,
+    HttpCode,
+    HttpStatus,
+    Param,
+    ParseIntPipe,
+    Post,
     Put,
-    Query, DefaultValuePipe, ParseIntPipe, HttpCode, HttpStatus, Header,
+    Query, UseGuards,
 } from '@nestjs/common';
 import {CreateStreamingService} from "./service/create.streaming.service";
 import {DeleteStreamingService} from "./service/delete.streaming.service";
-import { FindStreamingService } from "./service/find.streaming.service";
+import {FindStreamingService} from "./service/find.streaming.service";
 import {UpdateStreamingService} from "./service/update.streaming.service";
 import {GetStreamingService} from "./service/get.streaming.service";
 import {GetStreamingDetailsDto} from "./dto/GetStreamingDetails.dto";
@@ -19,10 +24,16 @@ import {UpdateStreamingDto} from "./dto/UpdateStreaming.dto";
 import {CreateStreamingDto} from "./dto/CreateStreaming.dto";
 import {
     ApiBadRequestResponse,
+    ApiBearerAuth,
     ApiCreatedResponse,
-    ApiForbiddenResponse, ApiInternalServerErrorResponse,
-    ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse,
-    ApiOperation, ApiQuery, ApiUnauthorizedResponse
+    ApiForbiddenResponse,
+    ApiInternalServerErrorResponse,
+    ApiNoContentResponse,
+    ApiNotFoundResponse,
+    ApiOkResponse,
+    ApiOperation,
+    ApiQuery, ApiTags,
+    ApiUnauthorizedResponse
 } from "@nestjs/swagger";
 import {CreateLocationHeader} from "../../api/interceptor/location.interceptor";
 import {AddTotalCountHeader} from "../../api/interceptor/totalCount.interceptor";
@@ -32,11 +43,16 @@ import {ParseFiltersPipe} from "../../api/pipe/filters.pipe";
 import {APPLICATION_JSON_CONTENT_TYPE, DEFAULT_LIMIT, HTTP_HEADERS} from "../../utils/Constants";
 import {STREAMING_MODULE_CONSTANTS} from "./streaming.constants";
 import {
-    createStreamingDescription, deleteStreamingDescription,
-    findStreamingsDescription, getStreamingDescription,
-    queryParams, updateStreamingDescription
+    createStreamingDescription,
+    deleteStreamingDescription,
+    findStreamingsDescription,
+    getStreamingDescription,
+    queryParams,
+    updateStreamingDescription
 } from "./streamingSwaggerDocumentation";
 import {GetStreamingDto} from "./dto/GetStreaming.dto";
+import {AdvGuard} from "../../api/guards/auth.guard";
+import {UserRole} from "../auth/model/UserRoles";
 
 @Controller(STREAMING_MODULE_CONSTANTS.STREAMING_ROUTE)
 export class StreamingController {
@@ -72,13 +88,17 @@ export class StreamingController {
     })
     @HttpCode(HttpStatus.CREATED)
     @Header(HTTP_HEADERS.CONTENT_TYPE, APPLICATION_JSON_CONTENT_TYPE)
+    @ApiBearerAuth('jwt')
+    @ApiTags('Streaming')
     @Post()
     @CreateLocationHeader(STREAMING_MODULE_CONSTANTS.STREAMING_ROUTE)
+    @UseGuards(AdvGuard([UserRole.ADMIN]))
     async create(
         @Body() body: CreateStreamingDto,
     ): Promise<GetStreamingDetailsDto> {
         return this.createStreamingService.create(body);
     }
+
 
     @ApiOkResponse({
         description: 'Success',
@@ -106,6 +126,9 @@ export class StreamingController {
     @ApiQuery(queryParams.Sort)
     @ApiQuery(queryParams.Limit)
     @Header(HTTP_HEADERS.CONTENT_TYPE, APPLICATION_JSON_CONTENT_TYPE)
+    @UseGuards(AdvGuard([UserRole.ADMIN, UserRole.AGENT]))
+    @ApiBearerAuth('jwt')
+    @ApiTags('Streaming')
     @Get()
     @ApiOperation({
         description:findStreamingsDescription,
@@ -152,6 +175,8 @@ export class StreamingController {
     })
     @HttpCode(HttpStatus.OK)
     @Header(HTTP_HEADERS.CONTENT_TYPE, APPLICATION_JSON_CONTENT_TYPE)
+    @UseGuards(AdvGuard([UserRole.ADMIN, UserRole.AGENT]))
+    @ApiTags('Streaming')
     @Get(':id')
     async get(@Param('id') id: string): Promise<GetStreamingDetailsDto> {
         return this.getStreamingService.get(+id);
@@ -183,6 +208,9 @@ export class StreamingController {
     })
     @HttpCode(HttpStatus.OK)
     @Header(HTTP_HEADERS.CONTENT_TYPE, APPLICATION_JSON_CONTENT_TYPE)
+    @UseGuards(AdvGuard([UserRole.ADMIN]))
+    @ApiBearerAuth('jwt')
+    @ApiTags('Streaming')
     @Put(':id')
     async update(
         @Param('id') id: string,
@@ -215,6 +243,9 @@ export class StreamingController {
     @HttpCode(HttpStatus.NO_CONTENT)
     @Header(HTTP_HEADERS.CONTENT_TYPE, APPLICATION_JSON_CONTENT_TYPE)
     @Delete(':id')
+    @UseGuards(AdvGuard([UserRole.ADMIN]))
+    @ApiBearerAuth('jwt')
+    @ApiTags('Streaming')
     @ApiNoContentResponse({description:'Deleted successfully'})
     async delete(@Param('id') id: string): Promise<void> {
         return this.deleteStreamingService.delete(+id);

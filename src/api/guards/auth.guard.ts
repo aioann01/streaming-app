@@ -1,37 +1,56 @@
-import { JwtService } from '@nestjs/jwt';
 import {
     CanActivate,
     ExecutionContext,
     ForbiddenException,
     UnauthorizedException,
-    Logger,
-    Injectable
+    Injectable,
+    mixin,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { UserInfo } from '../model/UserInfo';
+import { UserRole } from '../../modules/auth/model/UserRoles';
+import {HTTP_HEADERS} from "../../utils/Constants";
 
-@Injectable()
-export class AuthGuard implements CanActivate {
-    private readonly logger: Logger = new Logger(AuthGuard.name);
+export const AdvGuard = (allowedRoles: UserRole[]) => {
+    @Injectable()
+    class AuthGuardMixin implements CanActivate {
+        constructor(readonly jwtService: JwtService) {}
 
-    constructor(private jwtService: JwtService) {}
-    canActivate(context: ExecutionContext): boolean {
-        const request = context.switchToHttp().getRequest();
-        const authorizationHeader = request.get('authorization')
-        if(!authorizationHeader){
-            this.logger.error('Authorization header not provided');
-            throw new UnauthorizedException('Authorization header not provided');
-        }
-        const {type, token} = authorizationHeader.split(' ');
-        if (!token) {
-            this.logger.error('Invalid Authorization header');
-            throw new UnauthorizedException('Invalid Authorization header');
-        }
-        try {
-            const decoded = this.jwtService.verify(token, { secret: process.env.JWT_SECRET });
-            request.user = decoded;
-            return true
-        } catch (err) {
-            this.logger.error('Could not verify token');
-            throw new ForbiddenException('Could not verify token');
+        canActivate(context: ExecutionContext): boolean {
+            const request = context.switchToHttp().getRequest();
+
+            const authHeader = request.headers[HTTP_HEADERS.AUTHORIZATION];
+            if (!authHeader) {
+                throw new UnauthorizedException('Missing Authorization header');
+            }
+
+            const parts = authHeader.split(' ');
+            if (parts.length !== 2 || parts[0] !== 'Bearer') {
+                throw new UnauthorizedException('Invalid Authorization format');
+            }
+
+            const token = parts[1];
+
+            let userInfo: UserInfo;
+
+            try {
+                userInfo = this.jwtService.verify(token);
+            } catch {
+                throw new UnauthorizedException('Invalid or expired token');
+            }
+
+            request.userInfo = userInfo;
+
+            if (
+                allowedRoles?.length &&
+                !allowedRoles.includes(userInfo.role)
+            ) {
+                throw new ForbiddenException('Insufficient permissions to perform this operation');
+            }
+
+            return true;
         }
     }
-}
+
+    return mixin(AuthGuardMixin);
+};
