@@ -1,6 +1,6 @@
 import {Test} from '@nestjs/testing';
-import {StreamingController} from "./Streaming.controller";
-import {BadRequestException, Logger} from "@nestjs/common";
+import {StreamingController} from "./streaming.controller";
+import { Logger} from "@nestjs/common";
 import {CreateStreamingService} from "./service/create.streaming.service";
 import {FindStreamingService} from "./service/find.streaming.service";
 import {UpdateStreamingService} from "./service/update.streaming.service";
@@ -10,14 +10,11 @@ import {findStreamingsResponse, getStreamingWithDetailsResponse1} from "../../..
 import {TotalCountInterceptor} from "./../../api/interceptor/totalCount.interceptor";
 import {LocationInterceptor} from "./../../api/interceptor/location.interceptor";
 import {
-    createStreamingRequestWithInvalidThumbnailUrl,
-    createStreamingRequestWithInvalidVideoUrl,
     createStreamingValidRequest,
     updateStreamingValidRequest
 } from "../../../test/mock/api/requests";
 import {FindOptions} from "../../api/model/FindOptions";
 import {SortOptions, SortOrder} from "../../api/model/SortOptions";
-import {ConfigModule, ConfigService} from "@nestjs/config";
 import {JwtModule} from "@nestjs/jwt";
 
 
