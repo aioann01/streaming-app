@@ -1,35 +1,17 @@
-image: node:20
+name: CI
 
-stages:
-  - test
-  - deploy
+on:
+  push:
+  pull_request:
 
-cache:
-  key:
-    files:
-      - package-lock.json
-  paths:
-    - node_modules/
-    - .npm/
-  policy: pull-push
+jobs:
+  test:
+    runs-on: ubuntu-latest
 
-before_script:
-  - npm ci --cache .npm --prefer-offline
-
-test:
-  stage: test
-  script:
-    - npm run test
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_PIPELINE_SOURCE == "push"
-
-deploy:
-  stage: deploy
-  script:
-    - npm install -g @railway/cli
-    - railway login --token $RAILWAY_TOKEN
-    - railway up --service $RAILWAY_SERVICE_ID
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
-  needs: ["test"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run test
