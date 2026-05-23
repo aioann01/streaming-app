@@ -10,6 +10,6 @@ async function bootstrap() {
   app.getHttpServer().keepAliveTimeout = 65000;
   app.getHttpServer().headersTimeout = 66000;
   app.enableShutdownHooks();
-  await app.listen( process.env.port || 3000);
+  await app.listen( process.env.PORT || 3000);
 }
 bootstrap();
