@@ -1,0 +1,3479 @@
+{
+	"info": {
+		"_postman_id": "38031b00-7084-4009-b1d9-b7fa3f1a91b9",
+		"name": "StreamingApp_IT",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register Admin - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var createdEntity = pm.response.json();\r",
+									"var request =  JSON.parse(pm.request.body.raw);\r",
+									"var entityId = createdEntity.id;\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has auto-generated fields\", function () {\r",
+									"    pm.expect(createdEntity.created_at).to.exist;\r",
+									"    pm.expect(new Date(createdEntity.created_at)).to.be.a('date');\r",
+									"    pm.expect(createdEntity.id).to.exist.and.to.be.a('number');\r",
+									"    pm.expect(createdEntity.email).to.exist.and.to.eq(pm.environment.get('adminEmail'));\r",
+									"    pm.expect(createdEntity.role).to.exist.and.to.eq('ADMIN');\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const random = Math.random().toString(36).substring(2, 10);\r",
+									"const email = `user_${random}@testmail.com`;\r",
+									"\r",
+									"pm.environment.set(\"adminEmail\", email);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{adminEmail}}\",\r\n    \"password\": \"{{adminPassword}}\",\r\n    \"role\": \"ADMIN\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var createdEntity = pm.response.json();\r",
+									"var request =  JSON.parse(pm.request.body.raw);\r",
+									"var entityId = createdEntity.id;\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has auto-generated fields\", function () {\r",
+									"    pm.expect(createdEntity.created_at).to.exist;\r",
+									"    pm.expect(new Date(createdEntity.created_at)).to.be.a('date');\r",
+									"    pm.expect(createdEntity.id).to.exist.and.to.be.a('number');\r",
+									"    pm.expect(createdEntity.email).to.exist.and.to.eq(pm.environment.get('agentEmail'));\r",
+									"    pm.expect(createdEntity.role).to.exist.and.to.eq('AGENT');\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const random = Math.random().toString(36).substring(2, 10);\r",
+									"const email = `user_${random}@testmail.com`;\r",
+									"\r",
+									"pm.environment.set(\"agentEmail\", email);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"password\": \"{{agentPassword}}\",\r\n    \"role\": \"AGENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent  with email that exists - 409",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 409\", function () {\r",
+									"    pm.response.to.have.status(409);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"User already exists\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"password\": \"{{agentPassword}}\",\r\n    \"role\": \"AGENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent without role - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"role must be one of the following values: ADMIN, AGENT, role should not be empty\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"password\": \"{{agentPassword}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent with invalid role - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"role must be one of the following values: ADMIN, AGENT\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"password\": \"{{agentPassword}}\",\r\n    \"role\":\"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent without password - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"password must be longer than or equal to 6 characters, password should not be empty, password must match /^(?=.*[A-Za-z])(?=.*\\\\d).+$/ regular expression, password must be a string\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"role\": \"AGENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent without empty password - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"password must be longer than or equal to 6 characters, password should not be empty, password must match /^(?=.*[A-Za-z])(?=.*\\\\d).+$/ regular expression\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"password\":\"\",\r\n    \"role\": \"AGENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent with invalid password - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"password must be longer than or equal to 6 characters, password must match /^(?=.*[A-Za-z])(?=.*\\\\d).+$/ regular expression\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"password\":\"123\",\r\n    \"role\": \"AGENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent with password  without numbers - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"password must match /^(?=.*[A-Za-z])(?=.*\\\\d).+$/ regular expression\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"password\":\"Testing!\",\r\n    \"role\": \"AGENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent with password  without letters  - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"password must match /^(?=.*[A-Za-z])(?=.*\\\\d).+$/ regular expression\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"password\":\"231123!\",\r\n    \"role\": \"AGENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent without email - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"email must be longer than or equal to 5 characters, email must be an email, email should not be empty, email must be a string\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\":\"Testing123!\",\r\n    \"role\": \"AGENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent with not valid email - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"email must be an email\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\":\"Testing123!\",\r\n    \"email\":\"testas\",\r\n    \"role\": \"AGENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/register",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Admin - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"pm.collectionVariables.set('adminToken', response.access_token)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{adminEmail}}\",\r\n    \"password\": \"{{adminPassword}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/login",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Agent - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"pm.collectionVariables.set('agentToken', response.access_token)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"password\": \"{{agentPassword}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/login",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Agent with wrong password - 401",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"Invalid credentials\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{agentEmail}}\",\r\n    \"password\": \"{{adminPassword}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/login",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Agent with email that does not exists - 401",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"Invalid credentials\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"123{{agentEmail}}\",\r\n    \"password\": \"{{agentPassword}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/auth/login",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "health",
+			"item": [
+				{
+					"name": "Health",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en-US,en;q=0.9"
+							},
+							{
+								"key": "Cache-Control",
+								"value": "no-cache"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Pragma",
+								"value": "no-cache"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"123\", \"Not:A-Brand\";v=\"8\", \"Chromium\";v=\"123\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"url": {
+							"raw": "{{APIDomainName}}/health",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Streaming API",
+			"item": [
+				{
+					"name": "Create Streaming Without video_url",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"video_url should not be empty, video_url must be a valid HTTPS URL\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"Breaking Bad\",\r\n    \"thumbnail_url\":\"https://example.com:3000/thumbnails/breaking_bad\",\r\n    \"description\":\"Chemisty teacher goes meth drug lord\",\r\n    \"genre\":\"Drama\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Streaming Without valid video_url  - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"video_url must be a valid HTTPS URL\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"Breaking Bad\",\r\n    \"thumbnail_url\":\"https://example.com:3000/thumbnails/breaking_bad\",\r\n    \"description\":\"Chemisty teacher goes meth drug lord\",\r\n    \"genre\":\"Drama\",\r\n    \"video_url\":\"not valid\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Streaming Without https video_url  - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"video_url must be a valid HTTPS URL\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"Breaking Bad\",\r\n    \"thumbnail_url\":\"https://example.com:3000/thumbnails/breaking-bad\",\r\n    \"description\":\"Chemisty teacher goes meth drug lord\",\r\n    \"genre\":\"Drama\",\r\n    \"video_url\":\"http://example:3000/resources/breaking-bad\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Streaming Without thumbnail_url",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"thumbnail_url should not be empty, thumbnail_url must be a valid HTTPS URL\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"Breaking Bad\",\r\n    \"video_url\":\"https://example.com:3000/resources/breaking-bad\",\r\n    \"description\":\"Chemisty teacher goes meth drug lord\",\r\n    \"genre\":\"Drama\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Streaming Without https thumbnail_url  - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"thumbnail_url must be a valid HTTPS URL\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"Breaking Bad\",\r\n    \"thumbnail_url\":\"http://example.com:3000/thumbnails/breaking-bad\",\r\n    \"description\":\"Chemisty teacher goes meth drug lord\",\r\n    \"genre\":\"Drama\",\r\n    \"video_url\":\"https://example.com:3000/resources/breaking-bad\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Streaming Without valid thumbnail_url  - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"thumbnail_url must be a valid HTTPS URL\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"Breaking Bad\",\r\n    \"thumbnail_url\":\"example\",\r\n    \"description\":\"Chemisty teacher goes meth drug lord\",\r\n    \"genre\":\"Drama\",\r\n    \"video_url\":\"https://example.com:3000/resources/breaking-bad\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Streaming Without title",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"title must be longer than or equal to 2 characters, title should not be empty, title must be a string\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"video_url\":\"https://example.com:3000/resources/breaking-bad\",\r\n    \"description\":\"Chemisty teacher goes meth drug lord\",\r\n    \"thumbnail_url\":\"https://example.com:3000/thumbnail/breaking-bad\",\r\n    \"genre\":\"Drama\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Streaming with agent user - 403",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"Insufficient permissions to perform this operation\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{agentToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"Breaking Bad\",\r\n    \"video_url\":\"https://example.com:3000/resources/breaking-bad\",\r\n    \"thumbnail_url\":\"https://example.com:3000/thumbnails/breaking-bad\",\r\n    \"description\":\"Chemisty teacher goes meth drug lord\",\r\n    \"genre\":\"Drama\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Streaming without authorization - 401",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"Missing Authorization header\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"Breaking Bad\",\r\n    \"video_url\":\"https://example.com:3000/resources/breaking-bad\",\r\n    \"thumbnail_url\":\"https://example.com:3000/thumbnails/breaking-bad\",\r\n    \"description\":\"Chemisty teacher goes meth drug lord\",\r\n    \"genre\":\"Drama\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Streaming - 201",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"var createdEntity = pm.response.json();\r",
+									"var request =  JSON.parse(pm.request.body.raw);\r",
+									"var entityId = createdEntity.id;\r",
+									"\r",
+									"\r",
+									"pm.test(\"All request fields are included in the response\", function () {\r",
+									"\r",
+									"    var requestFields = Object.keys(request);\r",
+									"    var responseFields = Object.keys(createdEntity);\r",
+									"\r",
+									"    requestFields.forEach(function (field) {\r",
+									"        pm.expect(responseFields).to.include(field);\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"var expectedHref = pm.request.url.toString()+\"/\"+entityId;\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has auto-generated fields\", function () {\r",
+									"    pm.expect(createdEntity.created_at).to.exist;\r",
+									"    pm.expect(new Date(createdEntity.created_at)).to.be.a('date');\r",
+									"    pm.expect(createdEntity.id).to.exist.and.to.be.a('number');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"var href = createdEntity.href;\r",
+									"pm.test(\"Get id from response\", function () {\r",
+									"    pm.collectionVariables.set(\"streamingId1\", entityId);\r",
+									"})\r",
+									"\r",
+									"\r",
+									"pm.test(\"Location header exists and is correct\", function () {\r",
+									"   pm.response.to.have.header(\"location\");\r",
+									"   pm.response.to.be.header(\"location\", expectedHref);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"Breaking Bad\",\r\n    \"video_url\":\"https://example.com:3000/resources/breaking-bad\",\r\n    \"thumbnail_url\":\"https://example.com:3000/thumbnails/breaking-bad\",\r\n    \"description\":\"Chemisty teacher goes meth drug lord\",\r\n    \"genre\":\"Drama\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Streaming 2 - 201",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"var createdEntity = pm.response.json();\r",
+									"var request =  JSON.parse(pm.request.body.raw);\r",
+									"var entityId = createdEntity.id;\r",
+									"\r",
+									"\r",
+									"pm.test(\"All request fields are included in the response\", function () {\r",
+									"\r",
+									"    var requestFields = Object.keys(request);\r",
+									"    var responseFields = Object.keys(createdEntity);\r",
+									"\r",
+									"    requestFields.forEach(function (field) {\r",
+									"        pm.expect(responseFields).to.include(field);\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has auto-generated fields\", function () {\r",
+									"    pm.expect(createdEntity.created_at).to.exist;\r",
+									"    pm.expect(new Date(createdEntity.created_at)).to.be.a('date');\r",
+									"    pm.expect(createdEntity.id).to.exist.and.to.be.a('number');\r",
+									"});\r",
+									"\r",
+									"var expectedHref = pm.request.url.toString()+\"/\"+entityId;\r",
+									"\r",
+									"\r",
+									"var href = createdEntity.href;\r",
+									"pm.test(\"Get id from response\", function () {\r",
+									"    pm.collectionVariables.set(\"streamingId2\", entityId);\r",
+									"})\r",
+									"\r",
+									"\r",
+									"pm.test(\"Location header exists and is correct\", function () {\r",
+									"   pm.response.to.have.header(\"location\");\r",
+									"   pm.response.to.be.header(\"location\", expectedHref);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"How I met your Mother\",\r\n    \"video_url\":\"https://example.com:3000/resources/how-i-met-your-mother\",\r\n    \"thumbnail_url\":\"https://example.com:3000/thumbnails/how-i-met-your-mother\",\r\n    \"description\":\"Guy tels story to his kids of how he met their mother\",\r\n    \"genre\":\"Comedy\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Streaming 3 - 201",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"var createdEntity = pm.response.json();\r",
+									"var request =  JSON.parse(pm.request.body.raw);\r",
+									"var entityId = createdEntity.id;\r",
+									"\r",
+									"\r",
+									"pm.test(\"All request fields are included in the response\", function () {\r",
+									"\r",
+									"    var requestFields = Object.keys(request);\r",
+									"    var responseFields = Object.keys(createdEntity);\r",
+									"\r",
+									"    requestFields.forEach(function (field) {\r",
+									"        pm.expect(responseFields).to.include(field);\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has auto-generated fields\", function () {\r",
+									"    pm.expect(createdEntity.created_at).to.exist;\r",
+									"    pm.expect(new Date(createdEntity.created_at)).to.be.a('date');\r",
+									"    pm.expect(createdEntity.id).to.exist.and.to.be.a('number');\r",
+									"});\r",
+									"\r",
+									"var expectedHref = pm.request.url.toString()+\"/\"+entityId;\r",
+									"\r",
+									"\r",
+									"var href = createdEntity.href;\r",
+									"pm.test(\"Get id from response\", function () {\r",
+									"    pm.collectionVariables.set(\"streamingId3\", entityId);\r",
+									"})\r",
+									"\r",
+									"\r",
+									"pm.test(\"Location header exists and is correct\", function () {\r",
+									"   pm.response.to.have.header(\"location\");\r",
+									"   pm.response.to.be.header(\"location\", expectedHref);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"The office\",\r\n    \"video_url\":\"https://example.com:3000/resources/the-office\",\r\n    \"thumbnail_url\":\"https://example.com:3000/thumbnails/the-office\",\r\n    \"description\":\"Daily stories of people from an office\",\r\n    \"genre\":\"Comedy\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Streaming 4 - 201",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"var createdEntity = pm.response.json();\r",
+									"var request =  JSON.parse(pm.request.body.raw);\r",
+									"var entityId = createdEntity.id;\r",
+									"\r",
+									"\r",
+									"pm.test(\"All request fields are included in the response\", function () {\r",
+									"\r",
+									"    var requestFields = Object.keys(request);\r",
+									"    var responseFields = Object.keys(createdEntity);\r",
+									"\r",
+									"    requestFields.forEach(function (field) {\r",
+									"        pm.expect(responseFields).to.include(field);\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has auto-generated fields\", function () {\r",
+									"    pm.expect(createdEntity.created_at).to.exist;\r",
+									"    pm.expect(new Date(createdEntity.created_at)).to.be.a('date');\r",
+									"    pm.expect(createdEntity.id).to.exist.and.to.be.a('number');\r",
+									"});\r",
+									"\r",
+									"var expectedHref = pm.request.url.toString()+\"/\"+entityId;\r",
+									"\r",
+									"\r",
+									"var href = createdEntity.href;\r",
+									"pm.test(\"Get id from response\", function () {\r",
+									"    pm.collectionVariables.set(\"streamingId4\", entityId);\r",
+									"})\r",
+									"\r",
+									"\r",
+									"pm.test(\"Location header exists and is correct\", function () {\r",
+									"   pm.response.to.have.header(\"location\");\r",
+									"   pm.response.to.be.header(\"location\", expectedHref);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"Friends\",\r\n    \"video_url\":\"https://example.com:3000/resources/friends\",\r\n    \"thumbnail_url\":\"https://example.com:3000/thumbnails/friends\",\r\n    \"description\":\"Daily stories of friends\",\r\n    \"genre\":\"Comedy\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Streaming with admin token - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var retrievedEntity = pm.response.json();\r",
+									"\r",
+									"var entityId = retrievedEntity.id;\r",
+									"\r",
+									"var requiredAttributes = ['id', 'created_at', 'updated_at', 'title', 'video_url', 'thumbnail_url', 'description', 'genre'];\r",
+									"\r",
+									"pm.test('Retrieved Entity has all mandatory attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.include.members(requiredAttributes)\r",
+									"      });\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming/{{streamingId1}}",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming",
+								"{{streamingId1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Streaming with agent token - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var retrievedEntity = pm.response.json();\r",
+									"\r",
+									"var entityId = retrievedEntity.id;\r",
+									"\r",
+									"var requiredAttributes = ['id', 'created_at', 'updated_at', 'title', 'video_url', 'thumbnail_url', 'description', 'genre'];\r",
+									"\r",
+									"pm.test('Retrieved Entity has all mandatory attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.include.members(requiredAttributes)\r",
+									"      });\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{agentToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming/{{streamingId1}}",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming",
+								"{{streamingId1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Streaming without authorization- 401",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"Missing Authorization header\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming/{{streamingId1}}",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming",
+								"{{streamingId1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Streaming that does not exists - 404",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(`Streaming item with id 500 not found`);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming/500",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming",
+								"500"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update streaming   200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var retrievedEntity = pm.response.json();\r",
+									"\r",
+									"var entityId = retrievedEntity.id;\r",
+									"\r",
+									"var requiredAttributes = ['id', 'created_at', 'updated_at', 'title', 'video_url', 'thumbnail_url', 'description', 'genre'];\r",
+									"\r",
+									"pm.test('Retrieved Entity has all mandatory attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.include.members(requiredAttributes)\r",
+									"      });\r",
+									"\r",
+									"pm.test(\"Response has auto-generated fields\", function () {\r",
+									"    pm.expect(retrievedEntity.updated_at).to.exist;\r",
+									"    pm.expect(new Date(retrievedEntity.updated_at)).to.be.a('date');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response was updated\", function () {\r",
+									"    pm.expect(retrievedEntity.description).to.eq('Chemisty teacher breaks bad');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\":\"Chemisty teacher breaks bad\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming/{{streamingId1}}",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming",
+								"{{streamingId1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update streaming  with agent token - 403",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"Insufficient permissions to perform this operation\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{agentToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\":\"Chemisty teacher breaks bad\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming/{{streamingId1}}",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming",
+								"{{streamingId1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update streaming  without authorization - 401",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"Missing Authorization header\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\":\"Chemisty teacher breaks bad\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming/{{streamingId1}}",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming",
+								"{{streamingId1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update streaming that does not exists - 404",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(`Streaming item with id 55 not found`);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"Dummy\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming/55",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming",
+								"55"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all streamings with agent token - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var retrievedEntities = pm.response.json();\r",
+									"retrievedEntities.forEach(function (retrievedEntity) {\r",
+									"\r",
+									"\r",
+									"var requiredAttributes = ['id', 'title', 'thumbnail_url', 'created_at'];\r",
+									"var detailedAttributes = ['description', 'video_url', 'updated_at'];\r",
+									"\r",
+									"\r",
+									"pm.test('Retrieved Entity has all mandatory attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.include.members(requiredAttributes)\r",
+									"      });\r",
+									"\r",
+									"pm.test('Retrieved Entity does not has detailed attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.not.include.members(detailedAttributes)\r",
+									"      });\r",
+									"});\r",
+									"\r",
+									"const default_limit = 10;\r",
+									"pm.test(\"Check x_total_count and x_result_count response headers\", function () {\r",
+									"    pm.response.to.have.header(\"X-Result-Count\");\r",
+									"    var resultCount = Number(pm.response.headers.get(\"X-Result-Count\"));\r",
+									"    pm.expect(resultCount).to.eq(retrievedEntities.length);\r",
+									"    pm.response.to.have.header(\"X-Total-Count\");\r",
+									"    var totalCount = Number(pm.response.headers.get(\"X-Total-Count\"));\r",
+									"    pm.expect(totalCount).to.gte(retrievedEntities.length);\r",
+									"    pm.expect(resultCount).to.lte(default_limit);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{agentToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all streamings with admin  token - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var retrievedEntities = pm.response.json();\r",
+									"retrievedEntities.forEach(function (retrievedEntity) {\r",
+									"\r",
+									"\r",
+									"var requiredAttributes = ['id', 'title', 'thumbnail_url', 'created_at'];\r",
+									"var detailedAttributes = ['description', 'video_url', 'updated_at'];\r",
+									"\r",
+									"\r",
+									"pm.test('Retrieved Entity has all mandatory attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.include.members(requiredAttributes)\r",
+									"      });\r",
+									"\r",
+									"pm.test('Retrieved Entity does not has detailed attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.not.include.members(detailedAttributes)\r",
+									"      });\r",
+									"});\r",
+									"\r",
+									"const default_limit = 10;\r",
+									"pm.test(\"Check x_total_count and x_result_count response headers\", function () {\r",
+									"    pm.response.to.have.header(\"X-Result-Count\");\r",
+									"    var resultCount = Number(pm.response.headers.get(\"X-Result-Count\"));\r",
+									"    pm.expect(resultCount).to.eq(retrievedEntities.length);\r",
+									"    pm.response.to.have.header(\"X-Total-Count\");\r",
+									"    var totalCount = Number(pm.response.headers.get(\"X-Total-Count\"));\r",
+									"    pm.expect(totalCount).to.gte(retrievedEntities.length);\r",
+									"    pm.expect(resultCount).to.lte(default_limit);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all streamings without authorization - 401",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"Missing Authorization header\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all streamings sorted by created_at - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var retrievedEntities = pm.response.json();\r",
+									"retrievedEntities.forEach(function (retrievedEntity) {\r",
+									"\r",
+									"\r",
+									"var requiredAttributes = ['id', 'title', 'thumbnail_url', 'created_at'];\r",
+									"var detailedAttributes = ['description', 'video_url', 'updated_at'];\r",
+									"\r",
+									"\r",
+									"pm.test('Retrieved Entity has all mandatory attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.include.members(requiredAttributes)\r",
+									"      });\r",
+									"\r",
+									"pm.test('Retrieved Entity does not has detailed attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.not.include.members(detailedAttributes)\r",
+									"      });\r",
+									"});\r",
+									"\r",
+									"const default_limit = 10;\r",
+									"pm.test(\"Check x_total_count and x_result_count response headers\", function () {\r",
+									"    pm.response.to.have.header(\"X-Result-Count\");\r",
+									"    var resultCount = Number(pm.response.headers.get(\"X-Result-Count\"));\r",
+									"    pm.expect(resultCount).to.eq(retrievedEntities.length);\r",
+									"    pm.response.to.have.header(\"X-Total-Count\");\r",
+									"    var totalCount = Number(pm.response.headers.get(\"X-Total-Count\"));\r",
+									"    pm.expect(totalCount).to.gte(retrievedEntities.length);\r",
+									"    pm.expect(resultCount).to.lte(default_limit);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check that data are sorted\", function () {\r",
+									"\r",
+									"for (let i = 1; i < retrievedEntities.length; i++) {\r",
+									"        const prev = new Date(retrievedEntities[i - 1].created_at);\r",
+									"        const curr = new Date(retrievedEntities[i].created_at);\r",
+									"\r",
+									"        pm.expect(prev <= curr).to.be.true;\r",
+									"    }\r",
+									"\r",
+									"    });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{agentToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming?sort=created_at.asc",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "created_at.asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all streamings filtered by genre - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var retrievedEntities = pm.response.json();\r",
+									"retrievedEntities.forEach(function (retrievedEntity) {\r",
+									"\r",
+									"\r",
+									"var requiredAttributes = ['id', 'genre', 'title', 'thumbnail_url', 'created_at'];\r",
+									"var detailedAttributes = ['description', 'video_url', 'updated_at'];\r",
+									"\r",
+									"\r",
+									"pm.test('Retrieved Entity has all mandatory attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.include.members(requiredAttributes)\r",
+									"      });\r",
+									"\r",
+									"pm.test('Retrieved Entity does not has detailed attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.not.include.members(detailedAttributes)\r",
+									"      });\r",
+									"\r",
+									"pm.test('Retrieved Entity matches filter', function () {\r",
+									"     pm.expect(retrievedEntity.genre).to.eq('Comedy')\r",
+									"      });\r",
+									"});\r",
+									"\r",
+									"const default_limit = 10;\r",
+									"pm.test(\"Check x_total_count and x_result_count response headers\", function () {\r",
+									"    pm.response.to.have.header(\"X-Result-Count\");\r",
+									"    var resultCount = Number(pm.response.headers.get(\"X-Result-Count\"));\r",
+									"    pm.expect(resultCount).to.eq(retrievedEntities.length);\r",
+									"    pm.response.to.have.header(\"X-Total-Count\");\r",
+									"    var totalCount = Number(pm.response.headers.get(\"X-Total-Count\"));\r",
+									"    pm.expect(totalCount).to.gte(retrievedEntities.length);\r",
+									"    pm.expect(resultCount).to.lte(default_limit);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{agentToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming?genre=Comedy",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							],
+							"query": [
+								{
+									"key": "genre",
+									"value": "Comedy"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all streamings filtered by genre and title - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var retrievedEntities = pm.response.json();\r",
+									"retrievedEntities.forEach(function (retrievedEntity) {\r",
+									"\r",
+									"\r",
+									"var requiredAttributes = ['id', 'genre', 'title', 'thumbnail_url', 'created_at'];\r",
+									"var detailedAttributes = ['description', 'video_url', 'updated_at'];\r",
+									"\r",
+									"\r",
+									"pm.test('Retrieved Entity has all mandatory attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.include.members(requiredAttributes)\r",
+									"      });\r",
+									"\r",
+									"pm.test('Retrieved Entity does not has detailed attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.not.include.members(detailedAttributes)\r",
+									"      });\r",
+									"\r",
+									"pm.test('Retrieved Entity matches filter', function () {\r",
+									"     pm.expect(retrievedEntity.genre).to.eq('Comedy')\r",
+									"     pm.expect(retrievedEntity.title).to.eq('Friends')\r",
+									"      });\r",
+									"});\r",
+									"\r",
+									"const default_limit = 10;\r",
+									"pm.test(\"Check x_total_count and x_result_count response headers\", function () {\r",
+									"    pm.response.to.have.header(\"X-Result-Count\");\r",
+									"    var resultCount = Number(pm.response.headers.get(\"X-Result-Count\"));\r",
+									"    pm.expect(resultCount).to.eq(retrievedEntities.length);\r",
+									"    pm.response.to.have.header(\"X-Total-Count\");\r",
+									"    var totalCount = Number(pm.response.headers.get(\"X-Total-Count\"));\r",
+									"    pm.expect(totalCount).to.gte(retrievedEntities.length);\r",
+									"    pm.expect(resultCount).to.lte(default_limit);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{agentToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming?genre=Comedy&title=Friends",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							],
+							"query": [
+								{
+									"key": "genre",
+									"value": "Comedy"
+								},
+								{
+									"key": "title",
+									"value": "Friends"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all streamings filtered by genre with limit - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var retrievedEntities = pm.response.json();\r",
+									"retrievedEntities.forEach(function (retrievedEntity) {\r",
+									"\r",
+									"\r",
+									"var requiredAttributes = ['id', 'genre', 'title', 'thumbnail_url', 'created_at'];\r",
+									"var detailedAttributes = ['description', 'video_url', 'updated_at'];\r",
+									"\r",
+									"pm.test('Retrieved Entity has all mandatory attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.include.members(requiredAttributes)\r",
+									"      });\r",
+									"\r",
+									"pm.test('Retrieved Entity does not has detailed attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.not.include.members(detailedAttributes)\r",
+									"      });\r",
+									"\r",
+									"pm.test('Retrieved Entity matches filter', function () {\r",
+									"     pm.expect(retrievedEntity.genre).to.eq('Comedy')\r",
+									"      });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check x_total_count and x_result_count response headers\", function () {\r",
+									"    pm.response.to.have.header(\"X-Result-Count\");\r",
+									"    var resultCount = Number(pm.response.headers.get(\"X-Result-Count\"));\r",
+									"    pm.expect(resultCount).to.eq(retrievedEntities.length);\r",
+									"    pm.response.to.have.header(\"X-Total-Count\");\r",
+									"    var totalCount = Number(pm.response.headers.get(\"X-Total-Count\"));\r",
+									"    pm.expect(totalCount).to.gte(retrievedEntities.length);\r",
+									"    pm.expect(resultCount).to.lte(pm.collectionVariables.get('limit'));\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Check limit\", function () {\r",
+									"\r",
+									"    pm.expect(retrievedEntities.length).to.lte(pm.collectionVariables.get('limit'));\r",
+									"    });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var limit = 1;\r",
+									"pm.collectionVariables.set('limit',limit);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{agentToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming?genre=Comedy&limit={{limit}}",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							],
+							"query": [
+								{
+									"key": "genre",
+									"value": "Comedy"
+								},
+								{
+									"key": "limit",
+									"value": "{{limit}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all streamings filtered by genre with page 1 - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var retrievedEntities = pm.response.json();\r",
+									"let page1Ids=[];\r",
+									"\r",
+									"retrievedEntities.forEach(function (retrievedEntity) {\r",
+									"\r",
+									"\r",
+									"var requiredAttributes = ['id', 'genre', 'title', 'thumbnail_url', 'created_at'];\r",
+									"var detailedAttributes = ['description', 'video_url', 'updated_at'];\r",
+									"\r",
+									"\r",
+									"pm.test('Retrieved Entity has all mandatory attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.include.members(requiredAttributes)\r",
+									"      });\r",
+									"\r",
+									"pm.test('Retrieved Entity does not has detailed attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.not.include.members(detailedAttributes)\r",
+									"      });\r",
+									"\r",
+									"pm.test('Retrieved Entity matches filter', function () {\r",
+									"     pm.expect(retrievedEntity.genre).to.eq('Comedy')\r",
+									"      });\r",
+									"\r",
+									"page1Ids.push(retrievedEntity.id)\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check x_total_count and x_result_count response headers\", function () {\r",
+									"    pm.response.to.have.header(\"X-Result-Count\");\r",
+									"    var resultCount = Number(pm.response.headers.get(\"X-Result-Count\"));\r",
+									"    pm.expect(resultCount).to.eq(retrievedEntities.length);\r",
+									"    pm.response.to.have.header(\"X-Total-Count\");\r",
+									"    var totalCount = Number(pm.response.headers.get(\"X-Total-Count\"));\r",
+									"    pm.expect(totalCount).to.gte(retrievedEntities.length);\r",
+									"    pm.expect(resultCount).to.lte(pm.collectionVariables.get('limit'));\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Check limit and pagination\", function () {\r",
+									"\r",
+									"    pm.expect(retrievedEntities.length).to.lte(pm.collectionVariables.get('limit'));\r",
+									"    pm.collectionVariables.set('page1Ids',page1Ids )\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var limit = 2;\r",
+									"pm.collectionVariables.set('limit',limit);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{agentToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming?genre=Comedy&limit={{limit}}&page=1",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							],
+							"query": [
+								{
+									"key": "genre",
+									"value": "Comedy"
+								},
+								{
+									"key": "limit",
+									"value": "{{limit}}"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all streamings filtered by genre with page 2 - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var retrievedEntities = pm.response.json();\r",
+									"let page2Ids=[];\r",
+									"\r",
+									"retrievedEntities.forEach(function (retrievedEntity) {\r",
+									"\r",
+									"\r",
+									"var requiredAttributes = ['id', 'genre', 'title', 'thumbnail_url', 'created_at'];\r",
+									"var detailedAttributes = ['description', 'video_url', 'updated_at'];\r",
+									"\r",
+									"\r",
+									"pm.test('Retrieved Entity has all mandatory attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.include.members(requiredAttributes)\r",
+									"      });\r",
+									"\r",
+									"pm.test('Retrieved Entity does not has detailed attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.not.include.members(detailedAttributes)\r",
+									"      });\r",
+									"\r",
+									"pm.test('Retrieved Entity matches filter', function () {\r",
+									"     pm.expect(retrievedEntity.genre).to.eq('Comedy')\r",
+									"      });\r",
+									"\r",
+									"page2Ids.push(retrievedEntity.id)\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check x_total_count and x_result_count response headers\", function () {\r",
+									"    pm.response.to.have.header(\"X-Result-Count\");\r",
+									"    var resultCount = Number(pm.response.headers.get(\"X-Result-Count\"));\r",
+									"    pm.expect(resultCount).to.eq(retrievedEntities.length);\r",
+									"    pm.response.to.have.header(\"X-Total-Count\");\r",
+									"    var totalCount = Number(pm.response.headers.get(\"X-Total-Count\"));\r",
+									"    pm.expect(totalCount).to.gte(retrievedEntities.length);\r",
+									"    pm.expect(resultCount).to.lte(pm.collectionVariables.get('limit'));\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Check limit and pagination\", function () {\r",
+									"\r",
+									"    pm.expect(retrievedEntities.length).to.lte(pm.collectionVariables.get('limit'));\r",
+									"\r",
+									"    const commonIds = page2Ids.filter(id => pm.collectionVariables.get('page1Ids').includes(id));\r",
+									"\r",
+									"    pm.test(\"Page have different results\", function () {\r",
+									"    pm.expect(commonIds.length).to.eql(0);\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var limit = 2;\r",
+									"pm.collectionVariables.set('limit',limit);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{agentToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming?genre=Comedy&limit={{limit}}&page=2",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							],
+							"query": [
+								{
+									"key": "genre",
+									"value": "Comedy"
+								},
+								{
+									"key": "limit",
+									"value": "{{limit}}"
+								},
+								{
+									"key": "page",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all streamings filtered by genre sorted - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var retrievedEntities = pm.response.json();\r",
+									"\r",
+									"retrievedEntities.forEach(function (retrievedEntity) {\r",
+									"\r",
+									"\r",
+									"var requiredAttributes = ['id', 'genre', 'title', 'thumbnail_url', 'created_at'];\r",
+									"var detailedAttributes = ['description', 'video_url', 'updated_at'];\r",
+									"\r",
+									"pm.test('Retrieved Entity has all mandatory attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.include.members(requiredAttributes)\r",
+									"      });\r",
+									"\r",
+									"pm.test('Retrieved Entity does not has detailed attributes', function () {\r",
+									"     pm.expect(Object.keys(retrievedEntity)).to.not.include.members(detailedAttributes)\r",
+									"      });\r",
+									"\r",
+									"pm.test('Retrieved Entity matches filter', function () {\r",
+									"     pm.expect(retrievedEntity.genre).to.eq('Comedy')\r",
+									"      });\r",
+									"\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check x_total_count and x_result_count response headers\", function () {\r",
+									"    pm.response.to.have.header(\"X-Result-Count\");\r",
+									"    var resultCount = Number(pm.response.headers.get(\"X-Result-Count\"));\r",
+									"    pm.expect(resultCount).to.eq(retrievedEntities.length);\r",
+									"    pm.response.to.have.header(\"X-Total-Count\");\r",
+									"    var totalCount = Number(pm.response.headers.get(\"X-Total-Count\"));\r",
+									"    pm.expect(totalCount).to.gte(retrievedEntities.length);\r",
+									"    pm.expect(resultCount).to.lte(pm.collectionVariables.get('limit'));\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Check limit and pagination\", function () {\r",
+									"\r",
+									"    pm.expect(retrievedEntities.length).to.lte(pm.collectionVariables.get('limit'));\r",
+									"\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check that data are sorted\", function () {\r",
+									"\r",
+									"for (let i = 1; i < retrievedEntities.length; i++) {\r",
+									"        const prev = new Date(retrievedEntities[i - 1].created_at);\r",
+									"        const curr = new Date(retrievedEntities[i].created_at);\r",
+									"\r",
+									"        pm.expect(prev <= curr).to.be.true;\r",
+									"    }\r",
+									"\r",
+									"    });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var limit = 3;\r",
+									"pm.collectionVariables.set('limit',limit);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{agentToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming?genre=Comedy&limit={{limit}}&sort=created_at.asc",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming"
+							],
+							"query": [
+								{
+									"key": "genre",
+									"value": "Comedy"
+								},
+								{
+									"key": "limit",
+									"value": "{{limit}}"
+								},
+								{
+									"key": "sort",
+									"value": "created_at.asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Streaming - 204",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming/{{streamingId1}}",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming",
+								"{{streamingId1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Streaming with agent token - 403",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"Insufficient permissions to perform this operation\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{agentToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming/{{streamingId1}}",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming",
+								"{{streamingId1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Streaming without authorization - 401",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(\"Missing Authorization header\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming/{{streamingId1}}",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming",
+								"{{streamingId1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Streaming That Not Exists - 404",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"var response = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message should be correct\", function () {\r",
+									"    pm.expect(response.message).to.eq(`Streaming item with id 123 not found`);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming/123",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming",
+								"123"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "clean Resources",
+			"item": [
+				{
+					"name": "Delete Streaming 2 - 204",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming/{{streamingId2}}",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming",
+								"{{streamingId2}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Streaming 3 - 204",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming/{{streamingId3}}",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming",
+								"{{streamingId3}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Streaming 4 - 204",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{APIDomainName}}/api/streaming/{{streamingId4}}",
+							"host": [
+								"{{APIDomainName}}"
+							],
+							"path": [
+								"api",
+								"streaming",
+								"{{streamingId4}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{superUserToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "streamingId1",
+			"value": ""
+		},
+		{
+			"key": "adminToken",
+			"value": ""
+		},
+		{
+			"key": "agentToken",
+			"value": ""
+		},
+		{
+			"key": "streamingId2",
+			"value": ""
+		},
+		{
+			"key": "streamingId3",
+			"value": ""
+		},
+		{
+			"key": "streamingId4",
+			"value": ""
+		},
+		{
+			"key": "limit",
+			"value": ""
+		},
+		{
+			"key": "page1Ids",
+			"value": ""
+		}
+	]
+}
