@@ -2,6 +2,7 @@ image: node:20
 
 stages:
   - test
+  - deploy
 
 cache:
   key:
@@ -20,5 +21,15 @@ test:
   script:
     - npm run test
   rules:
-    - if: $CI_PIPELINE_SOURCE == "push"
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_PIPELINE_SOURCE == "push"
+
+deploy:
+  stage: deploy
+  script:
+    - npm install -g @railway/cli
+    - railway login --token $RAILWAY_TOKEN
+    - railway up --service $RAILWAY_SERVICE_ID
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  needs: ["test"]
