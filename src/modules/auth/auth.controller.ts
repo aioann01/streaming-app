@@ -15,6 +15,7 @@ import {AuthService} from "./auth.service";
 import {UserRegisterDto} from "./dto/UserRegister.dto";
 import {UserLoginDto} from "./dto/UserLogin.dto";
 import {UserResponseDto} from "./dto/UserResponse.dto";
+import {SkipThrottle} from "@nestjs/throttler";
 
 @Controller('auth')
 export class AuthController {

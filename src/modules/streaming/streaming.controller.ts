@@ -40,7 +40,13 @@ import {AddTotalCountHeader} from "../../api/interceptor/totalCount.interceptor"
 import {ParseSortCriteriaPipe} from "../../api/pipe/sort.pipe";
 import {SortOptions} from "../../api/model/SortOptions";
 import {ParseFiltersPipe} from "../../api/pipe/filters.pipe";
-import {APPLICATION_JSON_CONTENT_TYPE, DEFAULT_LIMIT, HTTP_HEADERS} from "../../utils/Constants";
+import {
+    APPLICATION_JSON_CONTENT_TYPE,
+    DEFAULT_LIMIT,
+    HTTP_HEADERS,
+    THROTTLING_REQUESTS,
+    THROTTLING_REQUESTS_PERIOD
+} from "../../utils/Constants";
 import {STREAMING_MODULE_CONSTANTS} from "./streaming.constants";
 import {
     createStreamingDescription,
@@ -53,6 +59,7 @@ import {
 import {GetStreamingDto} from "./dto/GetStreaming.dto";
 import {AdvGuard} from "../../api/guards/auth.guard";
 import {UserRole} from "../auth/model/UserRoles";
+import {SkipThrottle, Throttle} from '@nestjs/throttler';
 
 @Controller(STREAMING_MODULE_CONSTANTS.STREAMING_ROUTE)
 export class StreamingController {
@@ -129,6 +136,7 @@ export class StreamingController {
     @UseGuards(AdvGuard([UserRole.ADMIN, UserRole.AGENT]))
     @ApiBearerAuth('jwt')
     @ApiTags('Streaming')
+    @SkipThrottle()
     @Get()
     @ApiOperation({
         description:findStreamingsDescription,
@@ -177,6 +185,7 @@ export class StreamingController {
     @Header(HTTP_HEADERS.CONTENT_TYPE, APPLICATION_JSON_CONTENT_TYPE)
     @UseGuards(AdvGuard([UserRole.ADMIN, UserRole.AGENT]))
     @ApiTags('Streaming')
+    @SkipThrottle()
     @Get(':id')
     async get(@Param('id') id: string): Promise<GetStreamingDetailsDto> {
         return this.getStreamingService.get(+id);
@@ -211,6 +220,7 @@ export class StreamingController {
     @UseGuards(AdvGuard([UserRole.ADMIN]))
     @ApiBearerAuth('jwt')
     @ApiTags('Streaming')
+    @SkipThrottle()
     @Put(':id')
     async update(
         @Param('id') id: string,
@@ -246,6 +256,7 @@ export class StreamingController {
     @UseGuards(AdvGuard([UserRole.ADMIN]))
     @ApiBearerAuth('jwt')
     @ApiTags('Streaming')
+    @SkipThrottle()
     @ApiNoContentResponse({description:'Deleted successfully'})
     async delete(@Param('id') id: string): Promise<void> {
         return this.deleteStreamingService.delete(+id);
