@@ -109,7 +109,7 @@ http://localhost:3000/docs
 ---
 
 
-# Prod Deployemnt
+# Prod Deployment
 
 ## 1. Install dependencies
 
@@ -123,9 +123,9 @@ npm ci
 npm run build
 ```
 
-## 3. Setp environment variables
+## 3. Setup environment variables
 
-see #local-setup-instructions Environment Variables section
+see [Local Setup Instructions](#local-setup-instructions) Environment Variables section
 
 ## 4. Run Application
 
@@ -155,7 +155,27 @@ You can find more details about schema in [Swagger Docs]
 
 ---
 
+# Swagger Docs
 
+Swagger UI is available at:
+
+[Swagger Docs]
+
+It provides detailed information about:
+- Authentication (JWT)
+- API endpoints
+- Request / response schemas
+- Validation rules
+- Interactive API testing (you can execute requests directly)
+
+
+You can register a new user and then log in using the APIs in the **Auth** section.
+
+After logging in, use the **Authorize** button and provide the generated `jwt_token` from the login API. This is required to successfully access the APIs in the **Streaming** section.
+
+See [Authentication Flow](#authentication-flow) for more details on how login works.
+
+---
 
 # Authentication Flow
 
@@ -166,7 +186,7 @@ All streaming endpoints require a valid JWT token.
 POST /auth/register
 
 Supports roles:
-- ADMIN ( Can `Create`, `Udpate`, `Delete` and `View` streaming)
+- ADMIN ( Can `Create`, `Update`, `Delete` and `View` streaming)
 - AGENT ( Can only `View` streaming)
 
 ---
@@ -187,11 +207,10 @@ Response:
 
 ## Using JWT
 
-Authorization header:
+`Authorization header`:
+Bearer <jwt_token>
 
-Bearer {`jwt_token`}
-
-Some endpoints require ADMIN role (see [Swagger URL]).
+Some endpoints require ADMIN role (see [Swagger Docs]).
 
 ---
 
@@ -210,7 +229,7 @@ More details in [Swagger Docs]
 | DELETE | /api/streaming | Delete |
 
 
-For more details on each Api youc an refer to [Swagger Docs]
+For more details on each Api you can refer to [Swagger Docs]
 
 ---
 
@@ -229,26 +248,6 @@ Common responses:
 - 404 → Not found
 
 ---
-
-# Swagger Docs
-
-Swagger UI is available at:
-
-[Swagger Docs]
-
-It provides detailed information about:
-- Authentication (JWT)
-- API endpoints
-- Request / response schemas
-- Validation rules
-- Interactive API testing (you can execute requests directly)
-
-
-You can register a new user and then log in using the APIs in the **Auth** section.
-
-After logging in, use the **Authorize** button and provide the generated `jwt_token` from the login API. This is required to successfully access the APIs in the **Streaming** section.
-
-See [Authentication Flow](#authentication-flow) for more details on how login works.
 
 # Testing
 
