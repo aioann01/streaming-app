@@ -51,7 +51,7 @@ export class AuthService {
         });
 
         if (!user) {
-            this.logger.error(`User with email ${dto.email} does not exists exists`);
+            this.logger.error(`Login failed for email=${dto.email}`);
             throw new UnauthorizedException('Invalid credentials');
         }
 
@@ -70,10 +70,12 @@ export class AuthService {
             role: user.role,
         };
 
-        const token = await this.jwtService.signAsync(payload);
+        const access_token = await this.jwtService.signAsync(payload);
 
-        return {
-            access_token: token,
-        };
+        await this.userRepository.update(user.id, {
+            last_logged_in_at: new Date(),
+        });
+
+        return { access_token };
     }
 }

@@ -107,7 +107,7 @@ describe('Streaming Controller', () => {
         it('should successfully retrieve a Streaming', async () => {
 
             jest.spyOn(getStreamingService, 'get');
-            const mockStreamingId:string = '2';
+            const mockStreamingId:number = 2;
             const response = await controller.get(mockStreamingId);
             expect(getStreamingService.get).toBeCalledWith(+mockStreamingId);
             expect(response).toBe(getStreamingWithDetailsResponse1);
@@ -140,7 +140,7 @@ describe('Streaming Controller', () => {
 
     describe('Update a Streaming', () => {
         it('should successfully patch a Streaming', async () => {
-            const mockStreamingId:string = '2';
+            const mockStreamingId:number = 2;
             jest.spyOn(updateStreamingService, 'update');
             const response = await controller.update(mockStreamingId, updateStreamingValidRequest);
             expect(updateStreamingService.update).toBeCalledWith(+mockStreamingId, updateStreamingValidRequest);
@@ -150,7 +150,7 @@ describe('Streaming Controller', () => {
 
     describe('Deletes a Streaming', () => {
         it('should successfully delete a Streaming', async () => {
-            const mockStreamingId:string = '2';
+            const mockStreamingId:number = 2;
 
             jest.spyOn(deleteStreamingService, 'delete');
             await controller.delete(mockStreamingId );

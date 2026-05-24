@@ -6,7 +6,7 @@ import {
 } from "@nestjs/common";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { JwtService } from "@nestjs/jwt";
-import { Repository } from "typeorm";
+import { Repository, UpdateResult } from "typeorm";
 import * as bcrypt from "bcrypt";
 
 import { AuthService } from "./auth.service";
@@ -30,6 +30,7 @@ describe("Auth Service", () => {
                         findOneBy: jest.fn(),
                         create: jest.fn(),
                         save: jest.fn(),
+                        update:jest.fn()
                     },
                 },
                 {
@@ -135,6 +136,8 @@ describe("Auth Service", () => {
                 .spyOn(userRepository, "findOneBy")
                 .mockResolvedValue(user as User);
 
+            jest.spyOn(userRepository, "update").mockResolvedValue({} as UpdateResult);
+
             jest
                 .spyOn(jwtService, "signAsync")
                 .mockResolvedValue("jwt-token");
@@ -151,6 +154,10 @@ describe("Auth Service", () => {
                 role: user.role,
             });
 
+            expect(userRepository.update).toBeCalledWith(user.id, {
+                last_logged_in_at: expect.any(Date),
+            });
+
             expect(response).toEqual({
                 access_token: "jwt-token",
             });
@@ -162,6 +169,9 @@ describe("Auth Service", () => {
                 email: "test@test.com",
                 password: "password123",
             };
+
+            jest.spyOn(userRepository, "update").mockResolvedValue({} as UpdateResult);
+
 
             jest
                 .spyOn(userRepository, "findOneBy")
@@ -178,6 +188,8 @@ describe("Auth Service", () => {
                 email: dto.email,
             })
 
+            expect(userRepository.update).toBeCalledTimes(0);
+
         });
 
         it("should throw UnauthorizedException when password is invalid", async () => {
@@ -193,6 +205,9 @@ describe("Auth Service", () => {
                 role: UserRole.ADMIN,
             };
 
+            jest.spyOn(userRepository, "update").mockResolvedValue({} as UpdateResult);
+
+
             jest
                 .spyOn(userRepository, "findOneBy")
                 .mockResolvedValue(user as User);
@@ -204,6 +219,9 @@ describe("Auth Service", () => {
                 expect(e).toBeInstanceOf(UnauthorizedException);
                 expect(e.message).toBe('Invalid credentials');
             }
+
+            expect(userRepository.update).toBeCalledTimes(0);
+
         });
     });
 });
