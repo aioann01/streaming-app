@@ -59,7 +59,8 @@ import {
 import {GetStreamingDto} from "./dto/GetStreaming.dto";
 import {AdvGuard} from "../../api/guards/auth.guard";
 import {UserRole} from "../auth/model/UserRoles";
-import {SkipThrottle, Throttle} from '@nestjs/throttler';
+import {SkipThrottle} from '@nestjs/throttler';
+import {ParseIdPipe} from "../../api/pipe/parseId.pipe";
 
 @Controller(STREAMING_MODULE_CONSTANTS.STREAMING_ROUTE)
 export class StreamingController {
@@ -185,10 +186,11 @@ export class StreamingController {
     @Header(HTTP_HEADERS.CONTENT_TYPE, APPLICATION_JSON_CONTENT_TYPE)
     @UseGuards(AdvGuard([UserRole.ADMIN, UserRole.AGENT]))
     @ApiTags('Streaming')
+    @ApiBearerAuth('jwt')
     @SkipThrottle()
     @Get(':id')
-    async get(@Param('id') id: string): Promise<GetStreamingDetailsDto> {
-        return this.getStreamingService.get(+id);
+    async get(@Param('id', ParseIdPipe) id: number): Promise<GetStreamingDetailsDto> {
+        return this.getStreamingService.get(id);
     }
 
     @ApiOkResponse({
@@ -223,10 +225,10 @@ export class StreamingController {
     @SkipThrottle()
     @Put(':id')
     async update(
-        @Param('id') id: string,
+        @Param('id', ParseIdPipe) id: number,
         @Body() body: UpdateStreamingDto,
     ): Promise<GetStreamingDetailsDto> {
-        return this.updateStreamingService.update(+id, body);
+        return this.updateStreamingService.update(id, body);
     }
 
 
@@ -258,7 +260,7 @@ export class StreamingController {
     @ApiTags('Streaming')
     @SkipThrottle()
     @ApiNoContentResponse({description:'Deleted successfully'})
-    async delete(@Param('id') id: string): Promise<void> {
-        return this.deleteStreamingService.delete(+id);
+    async delete(@Param('id', ParseIdPipe) id: number): Promise<void> {
+        return this.deleteStreamingService.delete(id);
     }
 }
